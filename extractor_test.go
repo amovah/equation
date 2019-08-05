@@ -25,3 +25,7 @@ func TestIsNumber(t *testing.T) {
 	assert.Equal(t, true, isNumber("20031"))
 	assert.Equal(t, false, isNumber(""))
 }
+
+func TestExractOperator(t *testing.T) {
+
+}

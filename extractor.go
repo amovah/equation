@@ -37,30 +37,43 @@ func isNumber(str string) bool {
 	return err == nil
 }
 
-// type operator struct {
-// 	sybmol           string
-// 	innerExperession string
-// 	index            uint
-// }
+type operator struct {
+	symbol          string
+	innerExpression string
+	index           int
+}
 
-// func extractOperators(reader Reader) []operator {
-// 	result := make([]operator, 0)
+func extractOperators(reader Reader) []operator {
+	result := make([]operator, 0)
 
-// 	for {
-// 		current, index := reader(1, false)
-// 		if current == "" {
-// 			break
-// 		}
+	for {
+		current, index := reader(1, false)
+		if current == "" {
+			break
+		}
 
-// 		if _, err := strconv.ParseFloat(current, 64); err == nil {
-// 			continue
-// 		}
+		if _, err := strconv.ParseFloat(current, 64); err == nil {
+			continue
+		}
 
-// 		hasInner := false
-// 		prev, _ := reader(-1, true)
-// 		next, _ := reader(1, true)
-// 		if
-// 	}
+		prev, _ := reader(-1, true)
+		next, _ := reader(1, true)
 
-// 	return result
-// }
+		if (isNumber(prev) || prev == ")") && (isNumber(next) || next == "(") {
+			result = append(result, operator{
+				symbol:          current,
+				innerExpression: "",
+				index:           index,
+			})
+		} else {
+			inner := selectBlock(reader)
+			result = append(result, operator{
+				symbol:          current,
+				innerExpression: inner,
+				index:           index,
+			})
+		}
+	}
+
+	return result
+}
