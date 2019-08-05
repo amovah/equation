@@ -7,5 +7,5 @@ import (
 )
 
 func TestFirst(t *testing.T) {
-	assert.Equal(t, 4, Solve("2+2"))
+	assert.Equal(t, 4.0, Solve("2+2"))
 }
