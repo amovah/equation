@@ -26,23 +26,21 @@ func prevElement(arr []string, index int) string {
 	return arr[index-1]
 }
 
-// type cookedExpression struct {
-// 	sign             string
-// 	innerExperession string
-// 	index            uint
-// }
+func readStream(str string) func(step int, peek bool) string {
+	current := -1
+	splitted := splitter(str)
 
-// func readExp(str string) []cookedExpression {
-// 	result := make([]cookedExpression, 0)
-// 	splitted := splitter(str)
-// 	passed := 0
+	return func(step int, peek bool) string {
+		if peek == false {
+			defer func() {
+				current = current + step
+			}()
+		}
 
-// 	for i, v := range splitted {
-// 		if _, err := strconv.ParseFloat(v, 64); err == nil {
-// 			passed += len(v)
-// 			continue
-// 		}
-// 	}
+		if step >= 0 {
+			return nextElement(splitted, current+step-1)
+		}
 
-// 	return result
-// }
+		return prevElement(splitted, current+step+1)
+	}
+}

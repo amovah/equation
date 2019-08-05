@@ -44,6 +44,7 @@ func TestNextElement(t *testing.T) {
 	assert.Equal(t, "foo", nextElement([]string{"bar", "bax", "foo", "feet"}, 1))
 	assert.Equal(t, "", nextElement([]string{"bar"}, 1))
 	assert.Equal(t, "", nextElement([]string{}, -1))
+	assert.Equal(t, "dude", nextElement([]string{"dude"}, -1))
 }
 
 func TestPrevElement(t *testing.T) {
@@ -52,4 +53,28 @@ func TestPrevElement(t *testing.T) {
 	assert.Equal(t, "bar", prevElement([]string{"bar", "bax", "foo"}, 1))
 	assert.Equal(t, "", prevElement([]string{"bar"}, 0))
 	assert.Equal(t, "", prevElement([]string{}, 1))
+	assert.Equal(t, "dude", prevElement([]string{"dude"}, 1))
+}
+
+func TestReaderStream(t *testing.T) {
+	reader := readStream("23+(-4)")
+
+	current := reader(1, false)
+	assert.Equal(t, "23", current)
+
+	next := reader(1, true)
+	current = reader(1, false)
+	assert.Equal(t, "+", next)
+	assert.Equal(t, "+", current)
+
+	prev := reader(-1, true)
+	current = reader(0, false)
+	assert.Equal(t, "23", prev)
+	assert.Equal(t, "+", current)
+
+	current = reader(2, false)
+	assert.Equal(t, "-", current)
+
+	current = reader(-1, false)
+	assert.Equal(t, "(", current)
 }
