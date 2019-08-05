@@ -5,8 +5,7 @@ import (
 )
 
 func splitter(str string) []string {
-	reg := regexp.MustCompile(`\d+|\W|\w+`)
-
+	reg := regexp.MustCompile(`\d+\.\d+|\W|\w+`)
 	return reg.FindAllString(str, -1)
 }
 

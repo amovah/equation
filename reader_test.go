@@ -36,6 +36,19 @@ func TestSplitter(t *testing.T) {
 	assert.Equal(t, "43", case4[3])
 	assert.Equal(t, ")", case4[4])
 	assert.Equal(t, ")", case4[5])
+
+	case5 := splitter("4.0+10")
+	assert.Equal(t, "4.0", case5[0])
+	assert.Equal(t, "+", case5[1])
+	assert.Equal(t, "10", case5[2])
+
+	case6 := splitter("10+(-65.45)")
+	assert.Equal(t, "10", case6[0])
+	assert.Equal(t, "+", case6[1])
+	assert.Equal(t, "(", case6[2])
+	assert.Equal(t, "-", case6[3])
+	assert.Equal(t, "65.45", case6[4])
+	assert.Equal(t, ")", case6[5])
 }
 
 func TestNextElement(t *testing.T) {
