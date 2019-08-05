@@ -26,7 +26,9 @@ func prevElement(arr []string, index int) string {
 	return arr[index-1]
 }
 
-func readStream(str string) func(step int, peek bool) string {
+type Reader func(step int, peek bool) string
+
+func createReader(str string) Reader {
 	current := -1
 	splitted := splitter(str)
 

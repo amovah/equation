@@ -1,5 +1,27 @@
 package equation
 
+func selectBlock(reader Reader) string {
+	result := ""
+	count := 1
+
+	for {
+		next := reader(1, true)
+
+		if next == ")" {
+			count = count - 1
+			if count == 0 {
+				break
+			}
+		} else if next == "(" {
+			count = count + 1
+		}
+
+		result = result + next
+	}
+
+	return result
+}
+
 // type cookedExpression struct {
 // 	sign             string
 // 	innerExperession string
