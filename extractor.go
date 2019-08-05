@@ -38,7 +38,7 @@ func isNumber(str string) bool {
 }
 
 // type operator struct {
-// 	sign             string
+// 	sybmol           string
 // 	innerExperession string
 // 	index            uint
 // }
@@ -47,15 +47,19 @@ func isNumber(str string) bool {
 // 	result := make([]operator, 0)
 
 // 	for {
-// 		next, index := reader(1, false)
-// 		if next == "" {
+// 		current, index := reader(1, false)
+// 		if current == "" {
 // 			break
 // 		}
 
-// 		if _, err := strconv.ParseFloat(next, 64); err == nil {
+// 		if _, err := strconv.ParseFloat(current, 64); err == nil {
 // 			continue
 // 		}
 
+// 		hasInner := false
+// 		prev, _ := reader(-1, true)
+// 		next, _ := reader(1, true)
+// 		if
 // 	}
 
 // 	return result

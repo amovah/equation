@@ -23,4 +23,5 @@ func TestIsNumber(t *testing.T) {
 	assert.Equal(t, true, isNumber("4.0"))
 	assert.Equal(t, false, isNumber("(5"))
 	assert.Equal(t, true, isNumber("20031"))
+	assert.Equal(t, false, isNumber(""))
 }
