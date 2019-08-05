@@ -5,7 +5,7 @@ func selectBlock(reader Reader) string {
 	count := 0
 
 	for {
-		next := reader(1, false)
+		next, _ := reader(1, false)
 
 		if next == "" {
 			break
@@ -30,21 +30,19 @@ func selectBlock(reader Reader) string {
 	return result
 }
 
-// type cookedExpression struct {
+// type operator struct {
 // 	sign             string
 // 	innerExperession string
 // 	index            uint
 // }
 
-// func readExp(str string) []cookedExpression {
-// 	result := make([]cookedExpression, 0)
-// 	splitted := splitter(str)
-// 	passed := 0
+// func extractOperators(reader Reader) []operator {
+// 	result := make([]operator, 0)
 
-// 	for i, v := range splitted {
-// 		if _, err := strconv.ParseFloat(v, 64); err == nil {
-// 			passed += len(v)
-// 			continue
+// 	for {
+// 		next := reader(1, false)
+// 		if next == "" {
+// 			break
 // 		}
 // 	}
 

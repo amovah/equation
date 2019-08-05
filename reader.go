@@ -26,13 +26,13 @@ func prevElement(arr []string, index int) string {
 	return arr[index-1]
 }
 
-type Reader func(step int, peek bool) string
+type Reader func(step int, peek bool) (string, int)
 
 func createReader(str string) Reader {
 	current := -1
 	splitted := splitter(str)
 
-	return func(step int, peek bool) string {
+	return func(step int, peek bool) (string, int) {
 		if peek == false {
 			defer func() {
 				current = current + step
@@ -40,9 +40,9 @@ func createReader(str string) Reader {
 		}
 
 		if step >= 0 {
-			return nextElement(splitted, current+step-1)
+			return nextElement(splitted, current+step-1), current + step
 		}
 
-		return prevElement(splitted, current+step+1)
+		return prevElement(splitted, current+step+1), current + step
 	}
 }

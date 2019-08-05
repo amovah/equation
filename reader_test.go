@@ -59,22 +59,31 @@ func TestPrevElement(t *testing.T) {
 func TestReaderStream(t *testing.T) {
 	reader := createReader("23+(-4)")
 
-	current := reader(1, false)
+	current, i := reader(1, false)
 	assert.Equal(t, "23", current)
+	assert.Equal(t, 0, i)
 
-	next := reader(1, true)
-	current = reader(1, false)
+	next, i := reader(1, true)
 	assert.Equal(t, "+", next)
-	assert.Equal(t, "+", current)
+	assert.Equal(t, 1, i)
 
-	prev := reader(-1, true)
-	current = reader(0, false)
+	current, i = reader(1, false)
+	assert.Equal(t, "+", current)
+	assert.Equal(t, 1, i)
+
+	prev, i := reader(-1, true)
+	assert.Equal(t, 0, i)
 	assert.Equal(t, "23", prev)
+
+	current, i = reader(0, false)
 	assert.Equal(t, "+", current)
+	assert.Equal(t, 1, i)
 
-	current = reader(2, false)
+	current, i = reader(2, false)
 	assert.Equal(t, "-", current)
+	assert.Equal(t, 3, i)
 
-	current = reader(-1, false)
+	current, i = reader(-1, false)
 	assert.Equal(t, "(", current)
+	assert.Equal(t, 2, i)
 }
