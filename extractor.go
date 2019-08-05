@@ -1,5 +1,7 @@
 package equation
 
+import "strconv"
+
 func selectBlock(reader Reader) string {
 	result := ""
 	count := 0
@@ -30,6 +32,11 @@ func selectBlock(reader Reader) string {
 	return result
 }
 
+func isNumber(str string) bool {
+	_, err := strconv.ParseFloat(str, 64)
+	return err == nil
+}
+
 // type operator struct {
 // 	sign             string
 // 	innerExperession string
@@ -40,10 +47,15 @@ func selectBlock(reader Reader) string {
 // 	result := make([]operator, 0)
 
 // 	for {
-// 		next := reader(1, false)
+// 		next, index := reader(1, false)
 // 		if next == "" {
 // 			break
 // 		}
+
+// 		if _, err := strconv.ParseFloat(next, 64); err == nil {
+// 			continue
+// 		}
+
 // 	}
 
 // 	return result
