@@ -7,7 +7,7 @@ import (
 )
 
 func TestSplitter1(t *testing.T) {
-	all := Splitter("23+log(10,5)")
+	all := splitter("23+log(10,5)")
 
 	assert.Equal(t, "23", all[0])
 	assert.Equal(t, "+", all[1])
@@ -20,7 +20,7 @@ func TestSplitter1(t *testing.T) {
 }
 
 func TestSplitter2(t *testing.T) {
-	all := Splitter("+(-4)")
+	all := splitter("+(-4)")
 
 	assert.Equal(t, "+", all[0])
 	assert.Equal(t, "(", all[1])
@@ -30,7 +30,7 @@ func TestSplitter2(t *testing.T) {
 }
 
 func TestSplitter3(t *testing.T) {
-	all := Splitter("2+e")
+	all := splitter("2+e")
 
 	assert.Equal(t, "2", all[0])
 	assert.Equal(t, "+", all[1])
