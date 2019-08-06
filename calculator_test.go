@@ -15,3 +15,11 @@ func TestGatherBothSide(t *testing.T) {
 	assert.Equal(t, "12+13", left)
 	assert.Equal(t, "(4-(6))", right)
 }
+
+func TestGather(t *testing.T) {
+	gathered := gather(splitter("(5)+3^3-log(5,6.5)"), 0, 5)
+	assert.Equal(t, "(5)+3", gathered)
+
+	gathered = gather(splitter("(5)+3^3-log(5,6.5)"), 6, 10)
+	assert.Equal(t, "3-log(,", gathered)
+}
