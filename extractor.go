@@ -8,9 +8,9 @@ func selectBlock(reader Reader) string {
 	result := ""
 	count := 0
 
-	next, _ := reader(2, true)
-	if isNumber(next) {
-		return next
+	current, _ := reader(1, true)
+	if current != "(" {
+		return current
 	}
 
 	for {
@@ -59,20 +59,25 @@ func extractOperators(reader Reader) []operator {
 			break
 		}
 
-		if _, err := strconv.ParseFloat(current, 64); err == nil {
+		if is := isNumber(current); is {
 			continue
 		}
 
 		prev, _ := reader(-1, true)
-		next, _ := reader(1, true)
+		// next, _ := reader(1, true)
 
-		if (isNumber(prev) || prev == ")") && (isNumber(next) || next == "(") {
+		// if (isNumber(prev) || prev == ")") && (isNumber(next) || next == "(") {
+		if isNumber(prev) || prev == ")" {
 			result = append(result, operator{
 				symbol:          current,
 				innerExpression: "",
 				index:           index,
 			})
 		} else {
+			if current == "(" {
+				reader(-1, false)
+			}
+
 			inner := selectBlock(reader)
 			result = append(result, operator{
 				symbol:          current,
