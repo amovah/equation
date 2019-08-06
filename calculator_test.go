@@ -6,14 +6,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGatherBothSide(t *testing.T) {
-	left, right := gatherBothSide(splitter("2+23.1+6"), 1)
+func TestSplitIntoTwo(t *testing.T) {
+	left, right := splitIntoTwo(splitter("2+23.1+6"), 1)
 	assert.Equal(t, "2", left)
 	assert.Equal(t, "23.1+6", right)
 
-	left, right = gatherBothSide((splitter("12+13*(4-(6))")), 3)
+	left, right = splitIntoTwo((splitter("12+13*(4-(6))")), 3)
 	assert.Equal(t, "12+13", left)
 	assert.Equal(t, "(4-(6))", right)
+
+	left, right = splitIntoTwo(splitter("+((5))+3.14-1"), 6)
+	assert.Equal(t, "+((5))", left)
+	assert.Equal(t, "3.14-1", right)
 }
 
 func TestGather(t *testing.T) {
@@ -21,5 +25,5 @@ func TestGather(t *testing.T) {
 	assert.Equal(t, "(5)+3", gathered)
 
 	gathered = gather(splitter("(5)+3^3-log(5,6.5)"), 6, 10)
-	assert.Equal(t, "3-log(,", gathered)
+	assert.Equal(t, "3-log(", gathered)
 }

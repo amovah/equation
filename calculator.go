@@ -6,25 +6,8 @@ func gather(str []string, from int, to int) string {
 	return strings.Join(str[from:to], "")
 }
 
-func gatherBothSide(str []string, index int) (string, string) {
-	left := ""
-	right := ""
-	direction := false
-
-	for i, v := range str {
-		if i == index {
-			direction = true
-			continue
-		}
-
-		if direction {
-			right = right + v
-		} else {
-			left = left + v
-		}
-	}
-
-	return left, right
+func splitIntoTwo(str []string, index int) (string, string) {
+	return gather(str, 0, index), gather(str, index+1, len(str))
 }
 
 // func commaHandler(str string, extracted []operator) []float64 {
