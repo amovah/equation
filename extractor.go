@@ -65,9 +65,6 @@ func extractOperators(reader Reader) []operator {
 		}
 
 		prev, _ := reader(-1, true)
-		// next, _ := reader(1, true)
-
-		// if (isNumber(prev) || prev == ")") && (isNumber(next) || next == "(") {
 		if isNumber(prev) || prev == ")" {
 			result = append(result, operator{
 				symbol:          current,

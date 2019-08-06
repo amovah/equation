@@ -86,4 +86,16 @@ func TestExractOperator(t *testing.T) {
 	assert.Equal(t, "(", operators[2].symbol)
 	assert.Equal(t, "4-(6)", operators[2].innerExpression)
 	assert.Equal(t, 4, operators[2].index)
+
+	operators := extractOperators(createReader("(log(1,2))+4.4+12"))
+	assert.Equal(t, 3, len(operators))
+	assert.Equal(t, "(", operators[0].symbol)
+	assert.Equal(t, "log(1,2)", operators[0].innerExpression)
+	assert.Equal(t, 0, operators[0].index)
+	assert.Equal(t, "+", operators[1].symbol)
+	assert.Equal(t, "", operators[1].innerExpression)
+	assert.Equal(t, 8, operators[1].index)
+	assert.Equal(t, "+", operators[2].symbol)
+	assert.Equal(t, "", operators[2].innerExpression)
+	assert.Equal(t, 10, operators[2].index)
 }
