@@ -43,4 +43,7 @@ func TestCalculate(t *testing.T) {
 
 	answer = calculate("4^2", defaultOps)
 	assert.Equal(t, 16.0, answer)
+
+	answer = calculate("2-(-2)", defaultOps)
+	assert.Equal(t, 4.0, answer)
 }

@@ -32,6 +32,20 @@ func commaHandler(str string, userOperators map[string]operators.Operator) []flo
 	return result
 }
 
+func min(arr []operator, userOperators map[string]operators.Operator) operator {
+	min := arr[0]
+	minPriority := userOperators[min.symbol].Priority
+
+	for _, v := range arr {
+		if userOperators[v.symbol].Priority < minPriority {
+			min = v
+			minPriority = userOperators[v.symbol].Priority
+		}
+	}
+
+	return min
+}
+
 func calculate(str string, userOperators map[string]operators.Operator) float64 {
 	splitted := splitter(str)
 	extracted := extractOperators(createReader(str))
@@ -44,34 +58,32 @@ func calculate(str string, userOperators map[string]operators.Operator) float64 
 		return num
 	}
 
-	lowPriority := extracted[0]
-	priority := userOperators[lowPriority.symbol].Priority
+	hasInner := make([]operator, 0)
+	withoutInner := make([]operator, 0)
 	for _, v := range extracted {
-		if userOperators[v.symbol].Operation == nil {
-			return 0.0
-		}
-
-		if userOperators[v.symbol].Priority == priority && v.innerExpression == "" {
-			lowPriority = v
-			priority = userOperators[v.symbol].Priority
-			continue
-		}
-
-		if userOperators[v.symbol].Priority < priority {
-			lowPriority = v
-			priority = userOperators[v.symbol].Priority
+		if v.innerExpression == "" {
+			withoutInner = append(withoutInner, v)
+		} else {
+			hasInner = append(hasInner, v)
 		}
 	}
 
-	if lowPriority.innerExpression == "" {
-		left, right := splitIntoTwo(splitted, lowPriority.index)
-		return userOperators[lowPriority.symbol].Operation(
+	var low operator
+	if len(withoutInner) > 0 {
+		low = min(withoutInner, userOperators)
+	} else {
+		low = min(hasInner, userOperators)
+	}
+
+	if low.innerExpression == "" {
+		left, right := splitIntoTwo(splitted, low.index)
+		return userOperators[low.symbol].Operation(
 			calculate(left, userOperators),
 			calculate(right, userOperators),
 		)
 	} else {
-		return userOperators[lowPriority.symbol].Operation(
-			commaHandler(lowPriority.innerExpression, userOperators)...,
+		return userOperators[low.symbol].Operation(
+			commaHandler(low.innerExpression, userOperators)...,
 		)
 	}
 }
