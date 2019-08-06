@@ -1,10 +1,17 @@
 package equation
 
-import "strconv"
+import (
+	"strconv"
+)
 
 func selectBlock(reader Reader) string {
 	result := ""
 	count := 0
+
+	next, _ := reader(2, true)
+	if isNumber(next) {
+		return next
+	}
 
 	for {
 		next, _ := reader(1, false)
