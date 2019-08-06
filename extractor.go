@@ -10,6 +10,7 @@ func selectBlock(reader Reader) string {
 
 	current, _ := reader(1, true)
 	if current != "(" {
+		reader(1, false)
 		return current
 	}
 

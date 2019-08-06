@@ -19,6 +19,8 @@ func TestSelectBlock(t *testing.T) {
 
 	reader = createReader("5+sigma(10,20,30)")
 	assert.Equal(t, "5", selectBlock(reader))
+	_, index = reader(0, true)
+	assert.Equal(t, 0, index)
 }
 
 func TestIsNumber(t *testing.T) {
