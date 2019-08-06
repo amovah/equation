@@ -1,6 +1,7 @@
 package equation
 
 import (
+	"equation/operators"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,4 +27,17 @@ func TestGather(t *testing.T) {
 
 	gathered = gather(splitter("(5)+3^3-log(5,6.5)"), 6, 10)
 	assert.Equal(t, "3-log(", gathered)
+}
+
+func TestCalculate(t *testing.T) {
+	defaultOps := operators.Defaults()
+
+	// answer := calculate("(2+2*(-3))", defaultOps)
+	// assert.Equal(t, -4.0, answer)
+
+	// answer = calculate("+(-(-(2)))", defaultOps)
+	// assert.Equal(t, 2.0, answer)
+
+	answer := calculate("(5)+(5)", defaultOps)
+	assert.Equal(t, 40.0, answer)
 }
