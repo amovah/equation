@@ -47,6 +47,10 @@ func calculate(str string, userOperators map[string]operators.Operator) float64 
 	lowPriority := extracted[0]
 	priority := userOperators[lowPriority.symbol].Priority
 	for _, v := range extracted {
+		if userOperators[v.symbol].Operation == nil {
+			return 0.0
+		}
+
 		if userOperators[v.symbol].Priority == priority && v.innerExpression == "" {
 			lowPriority = v
 			priority = userOperators[v.symbol].Priority
