@@ -25,7 +25,7 @@ func Minus() Operator {
 		symbol: "-",
 		Operation: func(nums ...float64) float64 {
 			if len(nums) == 1 {
-				return -1 * nums[0]
+				return 0 - nums[0]
 			}
 
 			return nums[0] - nums[1]

@@ -32,12 +32,12 @@ func TestGather(t *testing.T) {
 func TestCalculate(t *testing.T) {
 	defaultOps := operators.Defaults()
 
-	// answer := calculate("(2+2*(-3))", defaultOps)
-	// assert.Equal(t, -4.0, answer)
+	answer := calculate("(2+2*(-3))", defaultOps)
+	assert.Equal(t, -4.0, answer)
 
-	// answer = calculate("+(-(-(2)))", defaultOps)
-	// assert.Equal(t, 2.0, answer)
+	answer = calculate("+(-(-(2)))", defaultOps)
+	assert.Equal(t, 2.0, answer)
 
-	answer := calculate("(5)+(5)", defaultOps)
+	answer = calculate("+(5)+(5*8-5)", defaultOps)
 	assert.Equal(t, 40.0, answer)
 }

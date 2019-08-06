@@ -2,7 +2,6 @@ package equation
 
 import (
 	"equation/operators"
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -48,6 +47,12 @@ func calculate(str string, userOperators map[string]operators.Operator) float64 
 	lowPriority := extracted[0]
 	priority := userOperators[lowPriority.symbol].Priority
 	for _, v := range extracted {
+		if userOperators[v.symbol].Priority == priority && v.innerExpression == "" {
+			lowPriority = v
+			priority = userOperators[v.symbol].Priority
+			continue
+		}
+
 		if userOperators[v.symbol].Priority < priority {
 			lowPriority = v
 			priority = userOperators[v.symbol].Priority
@@ -61,7 +66,6 @@ func calculate(str string, userOperators map[string]operators.Operator) float64 
 			calculate(right, userOperators),
 		)
 	} else {
-		fmt.Println(lowPriority.symbol, lowPriority.innerExpression)
 		return userOperators[lowPriority.symbol].Operation(
 			commaHandler(lowPriority.innerExpression, userOperators)...,
 		)
