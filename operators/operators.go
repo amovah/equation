@@ -1,5 +1,7 @@
 package operators
 
+import "math"
+
 type Operator struct {
 	symbol    string
 	Operation func(...float64) float64
@@ -60,7 +62,17 @@ func Parenthes() Operator {
 		Operation: func(nums ...float64) float64 {
 			return nums[0]
 		},
-		Priority: 2,
+		Priority: 4,
+	}
+}
+
+func Power() Operator {
+	return Operator{
+		symbol: "^",
+		Operation: func(nums ...float64) float64 {
+			return math.Pow(nums[0], nums[1])
+		},
+		Priority: 3,
 	}
 }
 
@@ -81,5 +93,6 @@ func Defaults() map[string]Operator {
 		Multiplication(),
 		Division(),
 		Parenthes(),
+		Power(),
 	)
 }
