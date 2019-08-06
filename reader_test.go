@@ -56,7 +56,7 @@ func TestNextElement(t *testing.T) {
 	assert.Equal(t, "", nextElement([]string{"3", "test"}, 1))
 	assert.Equal(t, "foo", nextElement([]string{"bar", "bax", "foo", "feet"}, 1))
 	assert.Equal(t, "", nextElement([]string{"bar"}, 1))
-	assert.Equal(t, "", nextElement([]string{}, -1))
+	assert.Equal(t, "", nextElement([]string{}, -2))
 	assert.Equal(t, "dude", nextElement([]string{"dude"}, -1))
 }
 
@@ -65,7 +65,7 @@ func TestPrevElement(t *testing.T) {
 	assert.Equal(t, "", prevElement([]string{"3", "test"}, 0))
 	assert.Equal(t, "bar", prevElement([]string{"bar", "bax", "foo"}, 1))
 	assert.Equal(t, "", prevElement([]string{"bar"}, 0))
-	assert.Equal(t, "", prevElement([]string{}, 1))
+	assert.Equal(t, "", prevElement([]string{}, 2))
 	assert.Equal(t, "dude", prevElement([]string{"dude"}, 1))
 }
 

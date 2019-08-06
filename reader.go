@@ -10,7 +10,7 @@ func splitter(str string) []string {
 }
 
 func nextElement(arr []string, index int) string {
-	if index+1 >= len(arr) {
+	if index+1 >= len(arr) || index+1 < 0 {
 		return ""
 	}
 
@@ -18,7 +18,7 @@ func nextElement(arr []string, index int) string {
 }
 
 func prevElement(arr []string, index int) string {
-	if index-1 < 0 || len(arr) == 0 {
+	if index-1 < 0 || index-1 >= len(arr) {
 		return ""
 	}
 
