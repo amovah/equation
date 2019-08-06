@@ -2,74 +2,84 @@ package operators
 
 type Operator struct {
 	symbol    string
-	operation func(...float64) float64
-	priority  int
+	Operation func(...float64) float64
+	Priority  int
 }
 
 func Plus() Operator {
 	return Operator{
 		symbol: "+",
-		operation: func(nums ...float64) float64 {
+		Operation: func(nums ...float64) float64 {
 			if len(nums) == 1 {
 				return nums[0]
 			}
 
 			return nums[0] + nums[1]
 		},
-		priority: 0,
+		Priority: 0,
 	}
 }
 
 func Minus() Operator {
 	return Operator{
 		symbol: "-",
-		operation: func(nums ...float64) float64 {
+		Operation: func(nums ...float64) float64 {
 			if len(nums) == 1 {
 				return -1 * nums[0]
 			}
 
 			return nums[0] - nums[1]
 		},
-		priority: 0,
+		Priority: 0,
 	}
 }
 
 func Multiplication() Operator {
 	return Operator{
 		symbol: "*",
-		operation: func(nums ...float64) float64 {
+		Operation: func(nums ...float64) float64 {
 			return nums[0] * nums[1]
 		},
-		priority: 1,
+		Priority: 1,
 	}
 }
 
 func Division() Operator {
 	return Operator{
 		symbol: "/",
-		operation: func(nums ...float64) float64 {
+		Operation: func(nums ...float64) float64 {
 			return nums[0] / nums[1]
 		},
-		priority: 1,
+		Priority: 1,
 	}
 }
 
 func Parenthes() Operator {
 	return Operator{
 		symbol: "(",
-		operation: func(nums ...float64) float64 {
+		Operation: func(nums ...float64) float64 {
 			return nums[0]
 		},
-		priority: 2,
+		Priority: 2,
 	}
 }
 
-func AllDefaults() []Operator {
-	return []Operator{
+func MergeOps(ops map[string]Operator, elems ...Operator) map[string]Operator {
+	for _, v := range elems {
+		ops[v.symbol] = v
+	}
+
+	return ops
+}
+
+func Defaults() map[string]Operator {
+	all := make(map[string]Operator)
+	return MergeOps(
+		all,
 		Plus(),
 		Minus(),
 		Multiplication(),
 		Division(),
 		Parenthes(),
-	}
+	)
 }
