@@ -76,10 +76,12 @@ func Power() Operator {
 	}
 }
 
-func Add(ops map[string]Operator, elems ...Operator) {
+func Add(ops map[string]Operator, elems ...Operator) map[string]Operator {
 	for _, v := range elems {
 		ops[v.Symbol] = v
 	}
+
+	return ops
 }
 
 func Defaults() map[string]Operator {
