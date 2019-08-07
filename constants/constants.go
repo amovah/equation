@@ -21,19 +21,20 @@ func E() Constant {
 	}
 }
 
-func Add(consts map[string]Constant, elems ...Constant) {
+func Add(consts []Constant, elems ...Constant) []Constant {
+	result := consts
 	for _, v := range elems {
-		consts[v.Symbol] = v
+		result = append(result, v)
 	}
+
+	return result
 }
 
-func Defaults() map[string]Constant {
-	all := make(map[string]Constant)
-	Add(
+func Defaults() []Constant {
+	all := make([]Constant, 0)
+	return Add(
 		all,
 		Pi(),
 		E(),
 	)
-
-	return all
 }
