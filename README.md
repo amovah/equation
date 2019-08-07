@@ -2,6 +2,12 @@
 
 Simple library which can solve complex Math expression for you!
 
+
+## Operators and Constants
+
+* Operators and their priority, [here](operators/operators.go)
+* Constants and their value, [here](constants/constants.go)
+
 ## Examples
 
 ```go
@@ -39,7 +45,7 @@ import (
 
 func main() {
 	ops := operators.Add(
-		operators.Defaults(), // add default operators
+		operators.Defaults(), // use default operators, it is not necessary, but recommended
 		operators.Operator{
 			Symbol: "@",
 			Operation: func(nums ...float64) float64 {
@@ -50,7 +56,7 @@ func main() {
 	)
 
 	consts := constants.Add(
-		constants.Defaults(),
+		constants.Defaults(), // use default constants, it is not necessary, but recommended
 		constants.Constant{
 			Symbol: "foo",
 			Value:  10,
@@ -65,8 +71,3 @@ func main() {
 }
 
 ```
-
-## Operators and Constants
-
-* Operators and their priority, [here](operators/operators.go)
-* Constants and their value, [here](constants/constants.go)
