@@ -32,7 +32,7 @@ func Minus() Operator {
 
 			return nums[0] - nums[1]
 		},
-		Priority: 0,
+		Priority: 1,
 	}
 }
 
@@ -42,7 +42,7 @@ func Multiplication() Operator {
 		Operation: func(nums ...float64) float64 {
 			return nums[0] * nums[1]
 		},
-		Priority: 1,
+		Priority: 2,
 	}
 }
 
@@ -52,7 +52,7 @@ func Division() Operator {
 		Operation: func(nums ...float64) float64 {
 			return nums[0] / nums[1]
 		},
-		Priority: 1,
+		Priority: 2,
 	}
 }
 
@@ -62,7 +62,7 @@ func Parenthes() Operator {
 		Operation: func(nums ...float64) float64 {
 			return nums[0]
 		},
-		Priority: 4,
+		Priority: 6,
 	}
 }
 
@@ -72,7 +72,7 @@ func Power() Operator {
 		Operation: func(nums ...float64) float64 {
 			return math.Pow(nums[0], nums[1])
 		},
-		Priority: 3,
+		Priority: 4,
 	}
 }
 

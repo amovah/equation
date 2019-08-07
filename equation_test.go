@@ -31,4 +31,8 @@ func TestFirst(t *testing.T) {
 	consts := constants.Defaults()
 
 	assert.Equal(t, 4.0, Solve("2+2", ops, consts))
+	assert.Equal(t, 22.718281828459045, Solve("e+20", ops, consts))
+	assert.Equal(t, -6.0, Solve("+(-(+(-(-6))))", ops, consts))
+	assert.Equal(t, 12.24, Solve("+12+0.24", ops, consts))
+	assert.Equal(t, 8.0, Solve("8-2^3+8", ops, consts))
 }
