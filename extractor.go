@@ -45,14 +45,14 @@ func isNumber(str string) bool {
 	return err == nil
 }
 
-type operator struct {
+type sign struct {
 	symbol          string
 	innerExpression string
 	index           int
 }
 
-func extractOperators(reader Reader) []operator {
-	result := make([]operator, 0)
+func extractOperators(reader Reader) []sign {
+	result := make([]sign, 0)
 
 	for {
 		current, index := reader(1, false)
@@ -66,7 +66,7 @@ func extractOperators(reader Reader) []operator {
 
 		prev, _ := reader(-1, true)
 		if isNumber(prev) || prev == ")" {
-			result = append(result, operator{
+			result = append(result, sign{
 				symbol:          current,
 				innerExpression: "",
 				index:           index,
@@ -77,7 +77,7 @@ func extractOperators(reader Reader) []operator {
 			}
 
 			inner := selectBlock(reader)
-			result = append(result, operator{
+			result = append(result, sign{
 				symbol:          current,
 				innerExpression: inner,
 				index:           index,

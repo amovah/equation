@@ -32,7 +32,7 @@ func commaHandler(str string, userOperators map[string]operators.Operator) []flo
 	return result
 }
 
-func min(arr []operator, userOperators map[string]operators.Operator) operator {
+func min(arr []sign, userOperators map[string]operators.Operator) sign {
 	min := arr[0]
 	minPriority := userOperators[min.symbol].Priority
 
@@ -58,8 +58,8 @@ func calculate(str string, userOperators map[string]operators.Operator) float64 
 		return num
 	}
 
-	hasInner := make([]operator, 0)
-	withoutInner := make([]operator, 0)
+	hasInner := make([]sign, 0)
+	withoutInner := make([]sign, 0)
 	for _, v := range extracted {
 		if v.innerExpression == "" {
 			withoutInner = append(withoutInner, v)
@@ -68,7 +68,7 @@ func calculate(str string, userOperators map[string]operators.Operator) float64 
 		}
 	}
 
-	var low operator
+	var low sign
 	if len(withoutInner) > 0 {
 		low = min(withoutInner, userOperators)
 	} else {
