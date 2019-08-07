@@ -1,8 +1,9 @@
 package equation
 
 import (
-	"equation/operators"
 	"testing"
+
+	"github.com/amovah/equation/operators"
 
 	"github.com/stretchr/testify/assert"
 )

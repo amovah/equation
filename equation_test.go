@@ -1,10 +1,11 @@
 package equation
 
 import (
-	"equation/constants"
-	"equation/operators"
 	"fmt"
 	"testing"
+
+	"github.com/amovah/equation/constants"
+	"github.com/amovah/equation/operators"
 
 	"github.com/stretchr/testify/assert"
 )

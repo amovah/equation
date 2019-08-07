@@ -1,9 +1,10 @@
 package equation
 
 import (
-	"equation/operators"
 	"strconv"
 	"strings"
+
+	"github.com/amovah/equation/operators"
 )
 
 func gather(str []string, from int, to int) string {

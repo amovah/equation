@@ -1,10 +1,11 @@
 package equation
 
 import (
-	"equation/constants"
-	"equation/operators"
 	"fmt"
 	"strings"
+
+	"github.com/amovah/equation/constants"
+	"github.com/amovah/equation/operators"
 )
 
 func removeSpace(str string) string {
