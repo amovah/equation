@@ -33,18 +33,36 @@ func commaHandler(str string, operators map[string]operators.Operator) []float64
 	return result
 }
 
-func min(arr []sign, operators map[string]operators.Operator) sign {
-	min := arr[0]
-	minPriority := operators[min.symbol].Priority
+func max(arr []sign, operators map[string]operators.Operator) sign {
+	max := arr[0]
+	maxPriority := operators[max.symbol].Priority
 
 	for _, v := range arr {
-		if operators[v.symbol].Priority < minPriority {
-			min = v
-			minPriority = operators[v.symbol].Priority
+		if operators[v.symbol].Priority < maxPriority {
+			max = v
+			maxPriority = operators[v.symbol].Priority
 		}
 	}
 
-	return min
+	return max
+}
+
+func replaceWith(org []string, from, to int, with string) []string {
+	result := make([]string, 0)
+	for i, v := range org {
+		if i >= from && i < to {
+			continue
+		}
+
+		if i == to {
+			result = append(result, with)
+			continue
+		}
+
+		result = append(result, v)
+	}
+
+	return result
 }
 
 func calculate(str string, operators map[string]operators.Operator) float64 {
@@ -71,9 +89,9 @@ func calculate(str string, operators map[string]operators.Operator) float64 {
 
 	var low sign
 	if len(withoutInner) > 0 {
-		low = min(withoutInner, operators)
+		low = max(withoutInner, operators)
 	} else {
-		low = min(hasInner, operators)
+		low = max(hasInner, operators)
 	}
 
 	if low.innerExpression == "" {

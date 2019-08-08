@@ -30,6 +30,15 @@ func TestGather(t *testing.T) {
 	assert.Equal(t, "3-log(", gathered)
 }
 
+func TestReplace(t *testing.T) {
+	res := replaceWith([]string{"a", "b", "c", "d"}, 0, 2, "f")
+	answer := []string{"f", "d"}
+	assert.Equal(t, len(answer), len(res))
+	for i, v := range res {
+		assert.Equal(t, answer[i], v)
+	}
+}
+
 func TestCalculate(t *testing.T) {
 	defaultOps := operators.Defaults()
 
