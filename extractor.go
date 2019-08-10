@@ -48,7 +48,8 @@ func isNumber(str string) bool {
 type sign struct {
 	symbol          string
 	innerExpression string
-	index           int
+	startIndex      int
+	endIndex        int
 }
 
 func extractOperators(reader Reader) []sign {
@@ -69,7 +70,8 @@ func extractOperators(reader Reader) []sign {
 			result = append(result, sign{
 				symbol:          current,
 				innerExpression: "",
-				index:           index,
+				startIndex:      index,
+				endIndex:        index,
 			})
 		} else {
 			if current == "(" {
@@ -77,10 +79,12 @@ func extractOperators(reader Reader) []sign {
 			}
 
 			inner := selectBlock(reader)
+			_, end := reader(0, true)
 			result = append(result, sign{
 				symbol:          current,
 				innerExpression: inner,
-				index:           index,
+				startIndex:      index,
+				endIndex:        end,
 			})
 		}
 	}

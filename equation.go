@@ -23,5 +23,8 @@ func replaceConsts(str string, consts []constants.Constant) string {
 }
 
 func Solve(expression string, ops map[string]operators.Operator, consts []constants.Constant) float64 {
-	return calculate(replaceConsts(removeSpace(expression), consts), ops)
+	return calculate(
+		splitter(replaceConsts(removeSpace(expression), consts)),
+		ops,
+	)
 }

@@ -27,9 +27,8 @@ func prevElement(arr []string, index int) string {
 
 type Reader func(step int, peek bool) (string, int)
 
-func createReader(str string) Reader {
+func createReader(str []string) Reader {
 	current := -1
-	splitted := splitter(str)
 
 	return func(step int, peek bool) (string, int) {
 		if peek == false {
@@ -39,9 +38,9 @@ func createReader(str string) Reader {
 		}
 
 		if step >= 0 {
-			return nextElement(splitted, current+step-1), current + step
+			return nextElement(str, current+step-1), current + step
 		}
 
-		return prevElement(splitted, current+step+1), current + step
+		return prevElement(str, current+step+1), current + step
 	}
 }

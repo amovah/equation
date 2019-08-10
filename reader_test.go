@@ -70,7 +70,7 @@ func TestPrevElement(t *testing.T) {
 }
 
 func TestReaderStream(t *testing.T) {
-	reader := createReader("23+(-4.0)")
+	reader := createReader(splitter("23+(-4.0)"))
 
 	current, i := reader(1, false)
 	assert.Equal(t, "23", current)
