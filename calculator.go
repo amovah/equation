@@ -24,9 +24,13 @@ func commaHandler(str []string, operators map[string]operators.Operator) []float
 		}
 	}
 
-	if len(result) == 0 {
-		return []float64{calculate(str, operators)}
-	}
+	result = append(
+		result,
+		calculate(
+			str[lastIndex:len(str)],
+			operators,
+		),
+	)
 
 	return result
 }
