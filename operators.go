@@ -1,6 +1,6 @@
 package equation
 
-const numberPrecedence = 0
+const noPrecedence = 0
 
 type equationPlaceType int8
 
@@ -33,43 +33,44 @@ func parenthesisSurround() equationSurroundSign {
 	}
 }
 
-func equationDefaultOperators() []equationOperator {
-	return []equationOperator{
-		{
-			symbol:     "+",
-			precedence: 10,
-			operation: func(nums ...float64) float64 {
-				return nums[0] + nums[1]
-			},
-			placeType: infixOperator,
+var defaultOperationList = []equationOperator{
+	{
+		symbol:     "+",
+		precedence: 10,
+		operation: func(nums ...float64) float64 {
+			return nums[0] + nums[1]
 		},
-		{
-			symbol:     "-",
-			precedence: 10,
-			operation: func(nums ...float64) float64 {
-				return nums[0] - nums[1]
-			},
-			placeType: infixOperator,
+		placeType: infixOperator,
+	},
+	{
+		symbol:     "-",
+		precedence: 10,
+		operation: func(nums ...float64) float64 {
+			return nums[0] - nums[1]
 		},
-		{
-			symbol:     "*",
-			precedence: 11,
-			operation: func(nums ...float64) float64 {
-				return nums[0] * nums[1]
-			},
-			placeType: infixOperator,
+		placeType: infixOperator,
+	},
+	{
+		symbol:     "*",
+		precedence: 11,
+		operation: func(nums ...float64) float64 {
+			return nums[0] * nums[1]
 		},
-		{
-			surroundSign: parenthesisSurround(),
-			precedence:   12,
-			operation: func(nums ...float64) float64 {
-				return nums[0] / nums[1]
-			},
-			placeType: surroundOperator,
+		placeType: infixOperator,
+	},
+	{
+		surroundSign: parenthesisSurround(),
+		operation: func(nums ...float64) float64 {
+			return nums[0] / nums[1]
 		},
-	}
-}
-
-func defaultSurroundSigns() []equationSurroundSign {
-	return []equationSurroundSign{parenthesisSurround()}
+		placeType: surroundOperator,
+	},
+	{
+		symbol:       "tavan",
+		surroundSign: parenthesisSurround(),
+		operation: func(nums ...float64) float64 {
+			return nums[0] + 2
+		},
+		placeType: prefixOperator,
+	},
 }
