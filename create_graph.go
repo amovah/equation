@@ -27,9 +27,7 @@ func applyArgsToPreviousOperator(
 		operatorNodeIdStack.pop()
 
 		_, ok := operatorNodeIdStack.peek()
-		fmt.Println("what is ok", ok)
 		if ok {
-			fmt.Println("so to in nemiad")
 			err := applyArgsToPreviousOperator(operatorNodeIdStack, tree, uid, markedExpressionPart)
 			if err != nil {
 				return err
