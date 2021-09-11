@@ -45,7 +45,7 @@ func applyArgsToPreviousOperator(
 }
 
 func createGraph(markedExpressionParts []markedExpression) error {
-	tree := equationTree{tree: map[uint]mathNode{}}
+	tree := newEquationTree()
 
 	var prevNodeId uint
 	operatorNodeIdStack := newStack()
@@ -105,6 +105,7 @@ func createGraph(markedExpressionParts []markedExpression) error {
 			var previousOperatorNode mathOperatorNode
 
 			previousOperatorNodeId, ok := operatorNodeIdStack.peek()
+			var isPreviousNodeStickOrSurround bool
 			if ok {
 				previousNode, err := tree.getOperatorNode(previousOperatorNodeId)
 				if err != nil {
@@ -112,16 +113,20 @@ func createGraph(markedExpressionParts []markedExpression) error {
 				}
 
 				previousOperatorNode = previousNode
+				isPreviousNodeStick := tree.getNode(previousOperatorNodeId).equationNodeType() == graphOperatorStickNode
+				isPreviousNodeSurround := previousOperatorNode.operator.placeType == surroundOperator
+
+				isPreviousNodeStickOrSurround = isPreviousNodeStick || isPreviousNodeSurround
 			}
 
+			isSymbolSurround := !ok || (ok && isPreviousNodeStickOrSurround)
+
 			for _, defaultOperator := range defaultOperationList {
-				if !ok || (ok && (tree.getNode(previousOperatorNodeId).equationNodeType() == graphOperatorStickNode || previousOperatorNode.operator.placeType == surroundOperator)) {
-					if defaultOperator.surroundSign.start == markedExpressionPart.content && defaultOperator.placeType == surroundOperator {
+				if defaultOperator.surroundSign.start == markedExpressionPart.content {
+					if isSymbolSurround && defaultOperator.placeType == surroundOperator {
 						operator = defaultOperator
 						break
-					}
-				} else {
-					if defaultOperator.surroundSign.start == markedExpressionPart.content && defaultOperator.placeType == prefixOperator {
+					} else if defaultOperator.placeType == prefixOperator {
 						operator = defaultOperator
 						break
 					}
@@ -132,7 +137,7 @@ func createGraph(markedExpressionParts []markedExpression) error {
 				panic("cannot be done")
 			}
 
-			if !ok || (ok && (tree.getNode(previousOperatorNodeId).equationNodeType() == graphOperatorStickNode || previousOperatorNode.operator.placeType == surroundOperator)) {
+			if isSymbolSurround {
 				tree.upsert(uid, mathOperatorNode{
 					id:           uid,
 					operator:     operator,

@@ -116,7 +116,6 @@ func (et *equationTree) getNode(id uint) mathNode {
 
 func (et *equationTree) upsert(id uint, node mathNode) {
 	et.tree[id] = node
-	fmt.Println("called", id, node.equationNodeType())
 }
 
 func (et *equationTree) getOperatorNode(id uint) (mathOperatorNode, error) {
@@ -126,4 +125,8 @@ func (et *equationTree) getOperatorNode(id uint) (mathOperatorNode, error) {
 	}
 
 	return node, nil
+}
+
+func newEquationTree() equationTree {
+	return equationTree{tree: map[uint]mathNode{}}
 }
