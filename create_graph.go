@@ -1,6 +1,7 @@
 package equation
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 )
@@ -103,27 +104,32 @@ func createGraph(markedExpressionParts []markedExpression) error {
 		if contentType == mathSurroundStart {
 			var operator equationOperator
 			var previousOperatorNode mathOperatorNode
+			var isPreviousNodeStickOrSurroundOperator bool
 
 			previousOperatorNodeId, ok := operatorNodeIdStack.peek()
-			var isPreviousNodeStickOrSurround bool
 			if ok {
-				previousNode, err := tree.getOperatorNode(previousOperatorNodeId)
+				operatorNode, err := tree.getOperatorNode(previousOperatorNodeId)
 				if err != nil {
 					return err
 				}
 
-				previousOperatorNode = previousNode
-				isPreviousNodeStick := tree.getNode(previousOperatorNodeId).equationNodeType() == graphOperatorStickNode
-				isPreviousNodeSurround := previousOperatorNode.operator.placeType == surroundOperator
+				previousOperatorNode = operatorNode
+				previousNode, err := tree.getNode(previousOperatorNodeId)
+				if err != nil {
+					return err
+				}
 
-				isPreviousNodeStickOrSurround = isPreviousNodeStick || isPreviousNodeSurround
+				isPreviousNodeStick := previousNode.equationNodeType() == graphOperatorStickNode
+				isPreviousNodeSurroundOperator := previousOperatorNode.operator.placeType == surroundOperator
+
+				isPreviousNodeStickOrSurroundOperator = isPreviousNodeStick || isPreviousNodeSurroundOperator
 			}
 
-			isSymbolSurround := !ok || (ok && isPreviousNodeStickOrSurround)
+			isSymbolSurroundOperator := !ok || (ok && isPreviousNodeStickOrSurroundOperator)
 
 			for _, defaultOperator := range defaultOperationList {
 				if defaultOperator.surroundSign.start == markedExpressionPart.content {
-					if isSymbolSurround && defaultOperator.placeType == surroundOperator {
+					if isSymbolSurroundOperator && defaultOperator.placeType == surroundOperator {
 						operator = defaultOperator
 						break
 					} else if defaultOperator.placeType == prefixOperator {
@@ -134,10 +140,10 @@ func createGraph(markedExpressionParts []markedExpression) error {
 			}
 
 			if ok && previousOperatorNode.operator.placeType == infixOperator {
-				panic("cannot be done")
+				return errors.New("cannot be done")
 			}
 
-			if isSymbolSurround {
+			if isSymbolSurroundOperator {
 				tree.upsert(uid, mathOperatorNode{
 					id:           uid,
 					operator:     operator,
@@ -158,7 +164,12 @@ func createGraph(markedExpressionParts []markedExpression) error {
 		if contentType == mathSurroundEnd {
 			currentGraphLevel = currentGraphLevel - 1
 			lastOperatorId, _ := operatorNodeIdStack.pop()
-			if tree.getNode(lastOperatorId).equationNodeType() == graphOperatorStickNode {
+			lastNode, err := tree.getNode(lastOperatorId)
+			if err != nil {
+				return err
+			}
+
+			if lastNode.equationNodeType() == graphOperatorStickNode {
 				lastOperatorId, _ = operatorNodeIdStack.pop()
 			}
 
@@ -169,8 +180,8 @@ func createGraph(markedExpressionParts []markedExpression) error {
 	}
 
 	for x, v := range tree.tree {
-		if v.equationNodeType() == graphOperatorNode {
-			fmt.Println(x, v.(mathOperatorNode).operatorArgs, v.equationGraphLevel())
+		if (*v).equationNodeType() == graphOperatorNode {
+			fmt.Println(x, (*v).(mathOperatorNode).operatorArgs, (*v).equationGraphLevel())
 		}
 	}
 

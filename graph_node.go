@@ -107,26 +107,36 @@ func (m mathNumberNode) equationGraphLevel() uint {
 }
 
 type equationTree struct {
-	tree map[uint]mathNode
+	tree map[uint]*mathNode
 }
 
-func (et *equationTree) getNode(id uint) mathNode {
-	return et.tree[id]
+func (et *equationTree) getNode(id uint) (mathNode, error) {
+	node := et.tree[id]
+	if node == nil {
+		return mathOperatorNode{}, errors.New(fmt.Sprintf("%d is not a node", id))
+	}
+
+	return *node, nil
 }
 
 func (et *equationTree) upsert(id uint, node mathNode) {
-	et.tree[id] = node
+	et.tree[id] = &node
 }
 
 func (et *equationTree) getOperatorNode(id uint) (mathOperatorNode, error) {
-	node, ok := et.tree[id].(mathOperatorNode)
+	node, err := et.getNode(id)
+	if err != nil {
+		return mathOperatorNode{}, err
+	}
+
+	operatorNode, ok := node.(mathOperatorNode)
 	if !ok {
 		return mathOperatorNode{}, errors.New(fmt.Sprintf("%d is not a mathOperatorNode", id))
 	}
 
-	return node, nil
+	return operatorNode, nil
 }
 
 func newEquationTree() equationTree {
-	return equationTree{tree: map[uint]mathNode{}}
+	return equationTree{tree: map[uint]*mathNode{}}
 }
