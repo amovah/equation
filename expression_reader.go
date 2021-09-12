@@ -36,6 +36,7 @@ func isNumber(str string) bool {
 
 func markMe(str string) []markedExpression {
 	result := make([]markedExpression, 0)
+	startSurroundSignMap, endSurroundSignMap := surroundSignMap()
 
 	splatted := splitter(str)
 	for _, value := range splatted {
@@ -44,12 +45,12 @@ func markMe(str string) []markedExpression {
 				content:     value,
 				contentType: mathNumber,
 			})
-		} else if value == "(" {
+		} else if startSurroundSignMap[value] {
 			result = append(result, markedExpression{
 				content:     value,
 				contentType: mathSurroundStart,
 			})
-		} else if value == ")" {
+		} else if endSurroundSignMap[value] {
 			result = append(result, markedExpression{
 				content:     value,
 				contentType: mathSurroundEnd,

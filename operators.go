@@ -26,11 +26,25 @@ type equationSurroundSign struct {
 	end   string
 }
 
-func parenthesisSurround() equationSurroundSign {
-	return equationSurroundSign{
-		start: "(",
-		end:   ")",
-	}
+var parenthesisSurroundSign = equationSurroundSign{
+	start: "(",
+	end:   ")",
+}
+
+var bracketSurroundSign = equationSurroundSign{
+	start: "[",
+	end:   "]",
+}
+
+var curlyBracketSurroundSign = equationSurroundSign{
+	start: "{",
+	end:   "}",
+}
+
+var surroundSignList = []equationSurroundSign{
+	parenthesisSurroundSign,
+	bracketSurroundSign,
+	curlyBracketSurroundSign,
 }
 
 var defaultOperationList = []equationOperator{
@@ -59,7 +73,7 @@ var defaultOperationList = []equationOperator{
 		placeType: infixOperator,
 	},
 	{
-		surroundSign: parenthesisSurround(),
+		surroundSign: parenthesisSurroundSign,
 		operation: func(nums ...float64) float64 {
 			return nums[0] / nums[1]
 		},
@@ -67,10 +81,21 @@ var defaultOperationList = []equationOperator{
 	},
 	{
 		symbol:       "tavan",
-		surroundSign: parenthesisSurround(),
+		surroundSign: parenthesisSurroundSign,
 		operation: func(nums ...float64) float64 {
 			return nums[0] + 2
 		},
 		placeType: prefixOperator,
 	},
+}
+
+func surroundSignMap() (map[string]bool, map[string]bool) {
+	var startSignMap map[string]bool
+	var endSignMap map[string]bool
+	for _, surroundSign := range surroundSignList {
+		startSignMap[surroundSign.start] = true
+		endSignMap[surroundSign.end] = false
+	}
+
+	return startSignMap, endSignMap
 }
