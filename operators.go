@@ -90,11 +90,11 @@ var defaultOperationList = []equationOperator{
 }
 
 func surroundSignMap() (map[string]bool, map[string]bool) {
-	var startSignMap map[string]bool
-	var endSignMap map[string]bool
+	startSignMap := make(map[string]bool)
+	endSignMap := make(map[string]bool)
 	for _, surroundSign := range surroundSignList {
 		startSignMap[surroundSign.start] = true
-		endSignMap[surroundSign.end] = false
+		endSignMap[surroundSign.end] = true
 	}
 
 	return startSignMap, endSignMap
