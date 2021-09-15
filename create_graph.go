@@ -53,6 +53,10 @@ func createGraph(markedExpressionParts []markedExpression) error {
 	var currentGraphLevel uint = 0
 
 	for id, markedExpressionPart := range markedExpressionParts {
+		if markedExpressionPart.contentType == mathSeparator {
+			continue
+		}
+
 		uid := uint(id)
 
 		contentType := markedExpressionPart.contentType

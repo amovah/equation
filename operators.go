@@ -1,6 +1,6 @@
 package equation
 
-const noPrecedence = 0
+const separateOperator = ","
 
 type equationPlaceType int8
 
@@ -8,7 +8,6 @@ const (
 	infixOperator equationPlaceType = iota
 	prefixOperator
 	surroundOperator
-	argSplitterOperator
 )
 
 type equationOperation func(nums ...float64) float64

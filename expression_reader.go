@@ -13,6 +13,7 @@ const (
 	mathNumber
 	mathSurroundStart
 	mathSurroundEnd
+	mathSeparator
 )
 
 type markedExpression struct {
@@ -54,6 +55,11 @@ func markMe(str string) []markedExpression {
 			result = append(result, markedExpression{
 				content:     value,
 				contentType: mathSurroundEnd,
+			})
+		} else if value == separateOperator {
+			result = append(result, markedExpression{
+				content:     value,
+				contentType: mathSeparator,
 			})
 		} else {
 			result = append(result, markedExpression{
