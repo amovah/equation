@@ -46,7 +46,7 @@ var surroundSignList = []equationSurroundSign{
 	curlyBracketSurroundSign,
 }
 
-var defaultOperationList = []equationOperator{
+var defaultInfixOperatorList = []equationOperator{
 	{
 		symbol:     "+",
 		precedence: 10,
@@ -71,15 +71,11 @@ var defaultOperationList = []equationOperator{
 		},
 		placeType: infixOperator,
 	},
+}
+
+var defaultPrefixOperatorList = []equationOperator{
 	{
-		surroundSign: parenthesisSurroundSign,
-		operation: func(nums ...float64) float64 {
-			return nums[0] / nums[1]
-		},
-		placeType: surroundOperator,
-	},
-	{
-		symbol:       "tavan",
+		symbol:       "plusTwo",
 		surroundSign: parenthesisSurroundSign,
 		operation: func(nums ...float64) float64 {
 			return nums[0] + 2
@@ -88,7 +84,54 @@ var defaultOperationList = []equationOperator{
 	},
 }
 
-func surroundSignMap() (map[string]bool, map[string]bool) {
+var defaultSurroundOperatorList = []equationOperator{
+	{
+		surroundSign: parenthesisSurroundSign,
+		operation: func(nums ...float64) float64 {
+			return nums[0]
+		},
+		placeType: surroundOperator,
+	},
+}
+
+func generateInfixOperatorMap() map[string]equationOperator {
+	result := make(map[string]equationOperator)
+
+	for _, operator := range defaultInfixOperatorList {
+		result[operator.symbol] = operator
+	}
+
+	return result
+}
+
+var infixOperatorMap = generateInfixOperatorMap()
+
+func generatePrefixOperatorMap() map[string]equationOperator {
+	result := make(map[string]equationOperator)
+
+	for _, operator := range defaultPrefixOperatorList {
+		result[operator.symbol] = operator
+	}
+
+	return result
+}
+
+var prefixOperatorMap = generatePrefixOperatorMap()
+
+func generateSurroundOperatorMap() map[string]equationOperator {
+	result := make(map[string]equationOperator)
+
+	for _, operator := range defaultSurroundOperatorList {
+		result[operator.surroundSign.start] = operator
+		result[operator.surroundSign.end] = operator
+	}
+
+	return result
+}
+
+var surroundOperatorMap = generateSurroundOperatorMap()
+
+func generateSurroundSignMap() (map[string]bool, map[string]bool) {
 	startSignMap := make(map[string]bool)
 	endSignMap := make(map[string]bool)
 	for _, surroundSign := range surroundSignList {
@@ -97,4 +140,12 @@ func surroundSignMap() (map[string]bool, map[string]bool) {
 	}
 
 	return startSignMap, endSignMap
+}
+
+func findOperatorInMap(symbol string, operatorMap map[string]equationOperator) (equationOperator, bool) {
+	if operatorMap[symbol].symbol == "" && operatorMap[symbol].surroundSign.start == "" {
+		return equationOperator{}, false
+	}
+
+	return operatorMap[symbol], true
 }

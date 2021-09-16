@@ -45,6 +45,38 @@ func applyArgsToPreviousOperator(
 	return nil
 }
 
+func findOperatorForMathSymbol(symbol string) (equationOperator, error) {
+	foundInfixOperator, found := findOperatorInMap(symbol, infixOperatorMap)
+	if found {
+		return foundInfixOperator, nil
+	}
+
+	foundPrefixOperator, found := findOperatorInMap(symbol, prefixOperatorMap)
+	if found {
+		return foundPrefixOperator, nil
+	}
+
+	return equationOperator{}, errors.New("cannot find operator with symbol " + symbol)
+}
+
+func findOperatorForMathSurround(symbol string, isSymbolSurroundOperator bool) (equationOperator, error) {
+	if isSymbolSurroundOperator {
+		operator, found := findOperatorInMap(symbol, surroundOperatorMap)
+		if !found {
+			return equationOperator{}, errors.New("cannot find surround operator with symbol " + symbol)
+		}
+
+		return operator, nil
+	}
+
+	operator, found := findOperatorInMap(symbol, prefixOperatorMap)
+	if !found {
+		return equationOperator{}, errors.New("cannot find prefix operator with symbol " + symbol)
+	}
+
+	return operator, nil
+}
+
 func createGraph(markedExpressionParts []markedExpression) error {
 	tree := newEquationTree()
 
@@ -82,12 +114,9 @@ func createGraph(markedExpressionParts []markedExpression) error {
 		}
 
 		if contentType == mathSymbol {
-			var operator equationOperator
-			for _, defaultOperator := range defaultOperationList {
-				if defaultOperator.symbol == markedExpressionPart.content {
-					operator = defaultOperator
-					break
-				}
+			operator, err := findOperatorForMathSymbol(markedExpressionPart.content)
+			if err != nil {
+				return err
 			}
 
 			var operatorArgs []uint
@@ -106,7 +135,6 @@ func createGraph(markedExpressionParts []markedExpression) error {
 		}
 
 		if contentType == mathSurroundStart {
-			var operator equationOperator
 			var previousOperatorNode mathOperatorNode
 			var isPreviousNodeStickOrSurroundOperator bool
 
@@ -131,20 +159,13 @@ func createGraph(markedExpressionParts []markedExpression) error {
 
 			isSymbolSurroundOperator := !ok || (ok && isPreviousNodeStickOrSurroundOperator)
 
-			for _, defaultOperator := range defaultOperationList {
-				if defaultOperator.surroundSign.start == markedExpressionPart.content {
-					if isSymbolSurroundOperator && defaultOperator.placeType == surroundOperator {
-						operator = defaultOperator
-						break
-					} else if defaultOperator.placeType == prefixOperator {
-						operator = defaultOperator
-						break
-					}
-				}
+			operator, err := findOperatorForMathSurround(markedExpressionPart.content, isSymbolSurroundOperator)
+			if err != nil {
+				return err
 			}
 
 			if ok && previousOperatorNode.operator.placeType == infixOperator {
-				return errors.New("cannot be done")
+				return errors.New("expected previous operator not to be a infix operator")
 			}
 
 			if isSymbolSurroundOperator {
