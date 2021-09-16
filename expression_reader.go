@@ -35,39 +35,43 @@ func isNumber(str string) bool {
 	return err == nil
 }
 
-func markMe(str string) []markedExpression {
-	result := make([]markedExpression, 0)
+func markEquationPart(str string) chan markedExpression {
+	ch := make(chan markedExpression, 0)
 	startSurroundSignMap, endSurroundSignMap := generateSurroundSignMap()
 
-	splatted := splitter(str)
-	for _, value := range splatted {
-		if isNumber(value) {
-			result = append(result, markedExpression{
-				content:     value,
-				contentType: mathNumber,
-			})
-		} else if startSurroundSignMap[value] {
-			result = append(result, markedExpression{
-				content:     value,
-				contentType: mathSurroundStart,
-			})
-		} else if endSurroundSignMap[value] {
-			result = append(result, markedExpression{
-				content:     value,
-				contentType: mathSurroundEnd,
-			})
-		} else if value == separateOperator {
-			result = append(result, markedExpression{
-				content:     value,
-				contentType: mathSeparator,
-			})
-		} else {
-			result = append(result, markedExpression{
-				content:     value,
-				contentType: mathSymbol,
-			})
+	go func() {
+		splatted := splitter(str)
+		for _, value := range splatted {
+			if isNumber(value) {
+				ch <- markedExpression{
+					content:     value,
+					contentType: mathNumber,
+				}
+			} else if startSurroundSignMap[value] {
+				ch <- markedExpression{
+					content:     value,
+					contentType: mathSurroundStart,
+				}
+			} else if endSurroundSignMap[value] {
+				ch <- markedExpression{
+					content:     value,
+					contentType: mathSurroundEnd,
+				}
+			} else if value == separateOperator {
+				ch <- markedExpression{
+					content:     value,
+					contentType: mathSeparator,
+				}
+			} else {
+				ch <- markedExpression{
+					content:     value,
+					contentType: mathSymbol,
+				}
+			}
 		}
-	}
 
-	return result
+		close(ch)
+	}()
+
+	return ch
 }

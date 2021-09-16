@@ -77,19 +77,18 @@ func findOperatorForMathSurround(symbol string, isSymbolSurroundOperator bool) (
 	return operator, nil
 }
 
-func createGraph(markedExpressionParts []markedExpression) error {
+func createGraph(markedExpressionParts chan markedExpression) error {
 	tree := newEquationTree()
+	operatorNodeIdStack := newStack()
 
 	var prevNodeId uint
-	operatorNodeIdStack := newStack()
 	var currentGraphLevel uint = 0
+	var uid uint = 0
 
-	for id, markedExpressionPart := range markedExpressionParts {
+	for markedExpressionPart := range markedExpressionParts {
 		if markedExpressionPart.contentType == mathSeparator {
 			continue
 		}
-
-		uid := uint(id)
 
 		contentType := markedExpressionPart.contentType
 
@@ -202,6 +201,8 @@ func createGraph(markedExpressionParts []markedExpression) error {
 		} else {
 			prevNodeId = uid
 		}
+
+		uid = uid + 1
 	}
 
 	for x, v := range tree.tree {
