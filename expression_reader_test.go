@@ -8,7 +8,12 @@ import (
 func TestStringReader(t *testing.T) {
 	//x := splitter("2+2+log(5, 55, 36)")
 
-	err := createGraph(markEquationPart("10*((3+2))+2"))
+	_, err := createGraph(
+		markEquationPart(splitter("10*((3+2))+2")),
+		surroundOperatorMap,
+		prefixOperatorMap,
+		infixOperatorMap,
+	)
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -2,7 +2,6 @@ package equation
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 )
 
@@ -45,7 +44,11 @@ func applyArgsToPreviousOperator(
 	return nil
 }
 
-func findOperatorForMathSymbol(symbol string) (equationOperator, error) {
+func findOperatorForMathSymbol(
+	symbol string,
+	infixOperatorMap map[string]equationOperator,
+	prefixOperatorMap map[string]equationOperator,
+) (equationOperator, error) {
 	foundInfixOperator, found := findOperatorInMap(symbol, infixOperatorMap)
 	if found {
 		return foundInfixOperator, nil
@@ -59,7 +62,12 @@ func findOperatorForMathSymbol(symbol string) (equationOperator, error) {
 	return equationOperator{}, errors.New("cannot find operator with symbol " + symbol)
 }
 
-func findOperatorForMathSurround(symbol string, isSymbolSurroundOperator bool) (equationOperator, error) {
+func findOperatorForMathSurround(
+	symbol string,
+	isSymbolSurroundOperator bool,
+	surroundOperatorMap map[string]equationOperator,
+	prefixOperatorMap map[string]equationOperator,
+) (equationOperator, error) {
 	if isSymbolSurroundOperator {
 		operator, found := findOperatorInMap(symbol, surroundOperatorMap)
 		if !found {
@@ -77,7 +85,12 @@ func findOperatorForMathSurround(symbol string, isSymbolSurroundOperator bool) (
 	return operator, nil
 }
 
-func createGraph(markedExpressionParts chan markedExpression) error {
+func createGraph(
+	markedExpressionParts chan markedExpression,
+	surroundOperatorMap map[string]equationOperator,
+	prefixOperatorMap map[string]equationOperator,
+	infixOperatorMap map[string]equationOperator,
+) (equationTree, error) {
 	tree := newEquationTree()
 	operatorNodeIdStack := newStack()
 
@@ -95,7 +108,7 @@ func createGraph(markedExpressionParts chan markedExpression) error {
 		if operatorNodeIdStack.size() > 0 {
 			err := applyArgsToPreviousOperator(&operatorNodeIdStack, &tree, uid, contentType)
 			if err != nil {
-				return err
+				return tree, err
 			}
 		}
 
@@ -113,9 +126,13 @@ func createGraph(markedExpressionParts chan markedExpression) error {
 		}
 
 		if contentType == mathSymbol {
-			operator, err := findOperatorForMathSymbol(markedExpressionPart.content)
+			operator, err := findOperatorForMathSymbol(
+				markedExpressionPart.content,
+				infixOperatorMap,
+				prefixOperatorMap,
+			)
 			if err != nil {
-				return err
+				return tree, err
 			}
 
 			var operatorArgs []uint
@@ -141,13 +158,13 @@ func createGraph(markedExpressionParts chan markedExpression) error {
 			if ok {
 				operatorNode, err := tree.getOperatorNode(previousOperatorNodeId)
 				if err != nil {
-					return err
+					return tree, err
 				}
 
 				previousOperatorNode = operatorNode
 				previousNode, err := tree.getNode(previousOperatorNodeId)
 				if err != nil {
-					return err
+					return tree, err
 				}
 
 				isPreviousNodeStick := previousNode.equationNodeType() == graphOperatorStickNode
@@ -158,13 +175,18 @@ func createGraph(markedExpressionParts chan markedExpression) error {
 
 			isSymbolSurroundOperator := !ok || (ok && isPreviousNodeStickOrSurroundOperator)
 
-			operator, err := findOperatorForMathSurround(markedExpressionPart.content, isSymbolSurroundOperator)
+			operator, err := findOperatorForMathSurround(
+				markedExpressionPart.content,
+				isSymbolSurroundOperator,
+				surroundOperatorMap,
+				prefixOperatorMap,
+			)
 			if err != nil {
-				return err
+				return tree, err
 			}
 
 			if ok && previousOperatorNode.operator.placeType == infixOperator {
-				return errors.New("expected previous operator not to be a infix operator")
+				return tree, errors.New("expected previous operator not to be a infix operator")
 			}
 
 			if isSymbolSurroundOperator {
@@ -190,7 +212,7 @@ func createGraph(markedExpressionParts chan markedExpression) error {
 			lastOperatorId, _ := operatorNodeIdStack.pop()
 			lastNode, err := tree.getNode(lastOperatorId)
 			if err != nil {
-				return err
+				return tree, err
 			}
 
 			if lastNode.equationNodeType() == graphOperatorStickNode {
@@ -205,11 +227,5 @@ func createGraph(markedExpressionParts chan markedExpression) error {
 		uid = uid + 1
 	}
 
-	for x, v := range tree.tree {
-		if (*v).equationNodeType() == graphOperatorNode {
-			fmt.Println(x, (*v).(mathOperatorNode).operatorArgs, (*v).equationGraphLevel())
-		}
-	}
-
-	return nil
+	return tree, nil
 }

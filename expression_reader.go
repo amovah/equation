@@ -35,13 +35,12 @@ func isNumber(str string) bool {
 	return err == nil
 }
 
-func markEquationPart(str string) chan markedExpression {
+func markEquationPart(splitted []string) chan markedExpression {
 	ch := make(chan markedExpression, 0)
-	startSurroundSignMap, endSurroundSignMap := generateSurroundSignMap()
+	startSurroundSignMap, endSurroundSignMap := generateSurroundSignMap(surroundSignList)
 
 	go func() {
-		splatted := splitter(str)
-		for _, value := range splatted {
+		for _, value := range splitted {
 			if isNumber(value) {
 				ch <- markedExpression{
 					content:     value,
