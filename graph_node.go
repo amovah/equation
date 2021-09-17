@@ -106,12 +106,12 @@ func (m mathNumberNode) equationGraphLevel() uint {
 	return m.graphLevel
 }
 
-type equationTree struct {
+type equationGraph struct {
 	tree map[uint]*mathNode
 }
 
-func (et *equationTree) getNode(id uint) (mathNode, error) {
-	node := et.tree[id]
+func (eg *equationGraph) getNode(id uint) (mathNode, error) {
+	node := eg.tree[id]
 	if node == nil {
 		return mathOperatorNode{}, errors.New(fmt.Sprintf("%d is not a node", id))
 	}
@@ -119,12 +119,12 @@ func (et *equationTree) getNode(id uint) (mathNode, error) {
 	return *node, nil
 }
 
-func (et *equationTree) upsert(id uint, node mathNode) {
-	et.tree[id] = &node
+func (eg *equationGraph) upsert(id uint, node mathNode) {
+	eg.tree[id] = &node
 }
 
-func (et *equationTree) getOperatorNode(id uint) (mathOperatorNode, error) {
-	node, err := et.getNode(id)
+func (eg *equationGraph) getOperatorNode(id uint) (mathOperatorNode, error) {
+	node, err := eg.getNode(id)
 	if err != nil {
 		return mathOperatorNode{}, err
 	}
@@ -137,6 +137,6 @@ func (et *equationTree) getOperatorNode(id uint) (mathOperatorNode, error) {
 	return operatorNode, nil
 }
 
-func newEquationTree() equationTree {
-	return equationTree{tree: map[uint]*mathNode{}}
+func newEquationTree() equationGraph {
+	return equationGraph{tree: map[uint]*mathNode{}}
 }

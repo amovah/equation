@@ -7,7 +7,7 @@ import (
 
 func applyArgsToPreviousOperator(
 	operatorNodeIdStack *stack,
-	tree *equationTree,
+	graph *equationGraph,
 	uid uint,
 	markedExpressionPart mathPartType,
 ) error {
@@ -15,7 +15,7 @@ func applyArgsToPreviousOperator(
 	var isMathSurroundEnd = markedExpressionPart == mathSurroundEnd
 
 	previousNodeId, _ := operatorNodeIdStack.peek()
-	previousNode, err := tree.getOperatorNode(previousNodeId)
+	previousNode, err := graph.getOperatorNode(previousNodeId)
 	if err != nil {
 		return err
 	}
@@ -23,22 +23,22 @@ func applyArgsToPreviousOperator(
 	previousNodeOperatorPlaceType := previousNode.operator.placeType
 	if previousNodeOperatorPlaceType == infixOperator {
 		previousNode.operatorArgs = append(previousNode.operatorArgs, uid)
-		tree.upsert(previousNode.id, previousNode)
+		graph.upsert(previousNode.id, previousNode)
 		operatorNodeIdStack.pop()
 
 		_, ok := operatorNodeIdStack.peek()
 		if ok {
-			err := applyArgsToPreviousOperator(operatorNodeIdStack, tree, uid, markedExpressionPart)
+			err := applyArgsToPreviousOperator(operatorNodeIdStack, graph, uid, markedExpressionPart)
 			if err != nil {
 				return err
 			}
 		}
 	} else if previousNodeOperatorPlaceType == surroundOperator && !isMathSurroundEnd {
 		previousNode.operatorArgs = append(previousNode.operatorArgs, uid)
-		tree.upsert(previousNode.id, previousNode)
+		graph.upsert(previousNode.id, previousNode)
 	} else if previousNodeOperatorPlaceType == prefixOperator && !isMathSurroundEnd && !isMathSurroundStart {
 		previousNode.operatorArgs = append(previousNode.operatorArgs, uid)
-		tree.upsert(previousNode.id, previousNode)
+		graph.upsert(previousNode.id, previousNode)
 	}
 
 	return nil
@@ -90,8 +90,8 @@ func createGraph(
 	surroundOperatorMap map[string]equationOperator,
 	prefixOperatorMap map[string]equationOperator,
 	infixOperatorMap map[string]equationOperator,
-) (equationTree, error) {
-	tree := newEquationTree()
+) (equationGraph, error) {
+	graph := newEquationTree()
 	operatorNodeIdStack := newStack()
 
 	var prevNodeId uint
@@ -106,9 +106,9 @@ func createGraph(
 		contentType := markedExpressionPart.contentType
 
 		if operatorNodeIdStack.size() > 0 {
-			err := applyArgsToPreviousOperator(&operatorNodeIdStack, &tree, uid, contentType)
+			err := applyArgsToPreviousOperator(&operatorNodeIdStack, &graph, uid, contentType)
 			if err != nil {
-				return tree, err
+				return graph, err
 			}
 		}
 
@@ -118,7 +118,7 @@ func createGraph(
 				converted = 0
 			}
 
-			tree.upsert(uid, mathNumberNode{
+			graph.upsert(uid, mathNumberNode{
 				id:         uid,
 				value:      converted,
 				graphLevel: currentGraphLevel,
@@ -132,7 +132,7 @@ func createGraph(
 				prefixOperatorMap,
 			)
 			if err != nil {
-				return tree, err
+				return graph, err
 			}
 
 			var operatorArgs []uint
@@ -140,7 +140,7 @@ func createGraph(
 				operatorArgs = append(operatorArgs, prevNodeId)
 			}
 
-			tree.upsert(uid, mathOperatorNode{
+			graph.upsert(uid, mathOperatorNode{
 				id:           uid,
 				operator:     operator,
 				operatorArgs: operatorArgs,
@@ -156,15 +156,15 @@ func createGraph(
 
 			previousOperatorNodeId, ok := operatorNodeIdStack.peek()
 			if ok {
-				operatorNode, err := tree.getOperatorNode(previousOperatorNodeId)
+				operatorNode, err := graph.getOperatorNode(previousOperatorNodeId)
 				if err != nil {
-					return tree, err
+					return graph, err
 				}
 
 				previousOperatorNode = operatorNode
-				previousNode, err := tree.getNode(previousOperatorNodeId)
+				previousNode, err := graph.getNode(previousOperatorNodeId)
 				if err != nil {
-					return tree, err
+					return graph, err
 				}
 
 				isPreviousNodeStick := previousNode.equationNodeType() == graphOperatorStickNode
@@ -182,15 +182,15 @@ func createGraph(
 				prefixOperatorMap,
 			)
 			if err != nil {
-				return tree, err
+				return graph, err
 			}
 
 			if ok && previousOperatorNode.operator.placeType == infixOperator {
-				return tree, errors.New("expected previous operator not to be a infix operator")
+				return graph, errors.New("expected previous operator not to be a infix operator")
 			}
 
 			if isSymbolSurroundOperator {
-				tree.upsert(uid, mathOperatorNode{
+				graph.upsert(uid, mathOperatorNode{
 					id:           uid,
 					operator:     operator,
 					operatorArgs: []uint{},
@@ -200,7 +200,7 @@ func createGraph(
 
 				operatorNodeIdStack.push(uid)
 			} else {
-				tree.upsert(uid, mathOperatorStickerNode{
+				graph.upsert(uid, mathOperatorStickerNode{
 					id: uid,
 				})
 			}
@@ -210,9 +210,9 @@ func createGraph(
 		if contentType == mathSurroundEnd {
 			currentGraphLevel = currentGraphLevel - 1
 			lastOperatorId, _ := operatorNodeIdStack.pop()
-			lastNode, err := tree.getNode(lastOperatorId)
+			lastNode, err := graph.getNode(lastOperatorId)
 			if err != nil {
-				return tree, err
+				return graph, err
 			}
 
 			if lastNode.equationNodeType() == graphOperatorStickNode {
@@ -227,5 +227,5 @@ func createGraph(
 		uid = uid + 1
 	}
 
-	return tree, nil
+	return graph, nil
 }
