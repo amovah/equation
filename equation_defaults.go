@@ -59,6 +59,7 @@ var defaultSurroundOperatorList = []equationOperator{
 		operation: func(nums ...float64) float64 {
 			return nums[0]
 		},
-		placeType: surroundOperator,
+		placeType:  surroundOperator,
+		precedence: 20,
 	},
 }

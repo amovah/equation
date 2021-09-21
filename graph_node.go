@@ -3,6 +3,7 @@ package equation
 import (
 	"errors"
 	"fmt"
+	"sort"
 )
 
 type graphNodeType uint8
@@ -135,6 +136,28 @@ func (eg *equationGraph) getOperatorNode(id uint) (mathOperatorNode, error) {
 	}
 
 	return operatorNode, nil
+}
+
+func (eg *equationGraph) chanOverTree() chan mathNode {
+	keys := make([]uint, 0)
+	for index, _ := range eg.tree {
+		keys = append(keys, index)
+	}
+	sort.Slice(keys, func(i, j int) bool {
+		return keys[i] < keys[j]
+	})
+
+	ch := make(chan mathNode)
+
+	go func() {
+		for _, index := range keys {
+			ch <- *eg.tree[index]
+		}
+
+		close(ch)
+	}()
+
+	return ch
 }
 
 func newEquationTree() equationGraph {
